@@ -10,20 +10,15 @@
     * { font-family: 'Baloo 2', cursive; }
     @keyframes bounce-pop { 0% { transform: scale(0); opacity: 0; } 70% { transform: scale(1.1); } 100% { transform: scale(1); opacity: 1; } }
     @keyframes float-bg { 0% { transform: translateY(0) rotate(0deg); opacity: 0; } 10% { opacity: 0.3; } 90% { opacity: 0.3; } 100% { transform: translateY(-100vh) rotate(360deg); opacity: 0; } }
-    
     .bg-item { position: absolute; bottom: -100px; font-size: 2rem; pointer-events: none; z-index: 1; animation: float-bg 15s linear infinite; }
-    
-    /* Reaksi Aidin (Sekarang di tengah sikit supaya tak ganggu tajuk) */
     .aidin-pop { position: fixed; top: 120px; width: 140px; z-index: 100; display: none; animation: bounce-pop 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards; }
     .aidin-left { left: 20px; } .aidin-right { right: 20px; }
     .aidin-container { width: 95px; height: 95px; margin: 0 auto; border-radius: 50%; border: 4px solid #FFD700; overflow: hidden; background: #fff; box-shadow: 0 8px 20px rgba(0,0,0,0.4); }
     .aidin-img { width: 100%; height: 100%; object-fit: cover; }
     .bubble { background: white; padding: 6px 10px; border-radius: 12px; font-weight: bold; font-size: 12px; margin-top: 5px; text-align: center; border: 2px solid #FFD700; color: #333; }
-    
     .timer-container { width: 100%; background: rgba(255,255,255,0.1); height: 12px; border-radius: 10px; overflow: hidden; margin-bottom: 15px; }
-    #timer-bar { height: 100%; width: 100%; background: linear-gradient(to right, #fbbf24, #f59e0b); transition: width 0.1s linear; }
-    
-    .card { cursor: pointer; transform-style: preserve-3d; transition: transform 0.5s; height: 100px; }
+    #timer-bar { height: 100%; width: 100%; background: #fbbf24; transition: width 0.1s linear; }
+    .card { cursor: pointer; transform-style: preserve-3d; transition: transform 0.5s; height: 100px; position: relative; }
     .card.flipped { transform: rotateY(180deg); }
     .card-face { position: absolute; width: 100%; height: 100%; backface-visibility: hidden; display: flex; align-items: center; justify-content: center; border-radius: 15px; font-weight: bold; padding: 5px; text-align: center; }
     .card-front { background: #4f46e5; color: white; border: 2px solid rgba(255,255,255,0.2); font-size: 24px; }
@@ -32,16 +27,13 @@
 </head>
 <body class="h-full overflow-hidden bg-[#1a1a3e]">
   <div id="app" class="min-h-full w-full relative overflow-hidden flex items-center justify-center" style="background: linear-gradient(180deg, #1a1a3e 0%, #2d1b4e 100%);">
-    
     <div id="background-elements" class="fixed inset-0 pointer-events-none"></div>
-
     <div id="aidin-reaction" class="aidin-pop">
         <div class="aidin-container"><img id="aidin-face" src="" class="aidin-img"></div>
         <div id="aidin-bubble" class="bubble">Wah!</div>
     </div>
 
     <div class="relative z-10 w-full max-w-lg p-4 flex flex-col items-center">
-      
       <div class="mb-6 text-center">
           <h2 class="text-white/60 text-xs tracking-[0.3em] uppercase font-black mb-1">Game Ramadhan Aidin</h2>
           <p class="text-pink-400 text-sm font-bold tracking-widest uppercase">by Babah ❤️</p>
@@ -49,69 +41,66 @@
 
       <div id="home-screen" class="text-center w-full">
         <div class="text-7xl mb-4">🌙</div>
-        <h1 class="text-5xl font-extrabold text-yellow-300 mb-8 drop-shadow-xl">Jom Berpuasa!</h1>
-        
-        <div class="grid grid-cols-1 gap-4">
-          <button onclick="startGame('quiz')" class="bg-emerald-500 text-white text-2xl font-bold py-5 rounded-3xl shadow-lg hover:scale-105 border-b-8 border-emerald-700 active:border-b-0 active:translate-y-2 transition-all">Kuiz Ramadhan 🕌</button>
-          <button onclick="startGame('collect')" class="bg-purple-500 text-white text-2xl font-bold py-5 rounded-3xl shadow-lg hover:scale-105 border-b-8 border-purple-700 active:border-b-0 active:translate-y-2 transition-all">Kira Bintang ⭐</button>
-          <button onclick="startGame('memory')" class="bg-orange-500 text-white text-2xl font-bold py-5 rounded-3xl shadow-lg hover:scale-105 border-b-8 border-orange-700 active:border-b-0 active:translate-y-2 transition-all">Kad Memori 🎴</button>
+        <div class="grid grid-cols-1 gap-4 mb-8">
+          <button onclick="startGame('quiz')" class="bg-emerald-500 text-white text-2xl font-bold py-5 rounded-3xl shadow-lg hover:scale-105 border-b-8 border-emerald-700 transition-all">Kuiz Ramadhan 🕌</button>
+          <button onclick="startGame('collect')" class="bg-purple-500 text-white text-2xl font-bold py-5 rounded-3xl shadow-lg hover:scale-105 border-b-8 border-purple-700 transition-all">Kira Bintang ⭐</button>
+          <button onclick="startGame('memory')" class="bg-orange-500 text-white text-2xl font-bold py-5 rounded-3xl shadow-lg hover:scale-105 border-b-8 border-orange-700 transition-all">Kad Memori 🎴</button>
         </div>
-
-        <div class="mt-10 bg-white/10 backdrop-blur-md rounded-2xl p-4 inline-block px-8 border border-white/20">
-            <p class="text-gray-300 text-xs tracking-widest uppercase mb-1">Rekod Terbaik</p>
-            <p class="text-yellow-300 text-3xl font-bold">⭐ <span id="high-score">0</span></p>
+        <div class="bg-white/10 backdrop-blur-md rounded-2xl p-4 w-full border border-white/20">
+            <p class="text-white/40 text-[10px] uppercase font-bold mb-2 tracking-widest">Rekod Peribadi Aidin</p>
+            <div class="grid grid-cols-3 gap-2 text-[10px] text-white/80">
+                <div>KUIZ: <span id="rec-quiz" class="text-yellow-400 font-bold">-</span></div>
+                <div>BINTANG: <span id="rec-collect" class="text-yellow-400 font-bold">-</span></div>
+                <div>MEMORI: <span id="rec-memory" class="text-yellow-400 font-bold">-</span></div>
+            </div>
         </div>
       </div>
 
       <div id="game-screen" class="hidden text-center w-full">
         <div class="bg-white/10 backdrop-blur-xl rounded-[2.5rem] p-8 shadow-2xl border border-white/20 relative">
-          
           <div class="flex justify-between items-center mb-4">
-            <div id="game-label" class="text-yellow-300 text-xs font-black uppercase tracking-widest">Sedia...</div>
-            <div class="bg-indigo-600 text-white px-4 py-1 rounded-full font-black text-sm border-2 border-indigo-400">⭐ <span id="current-score">0</span></div>
+            <div id="game-label" class="text-yellow-300 text-xs font-black uppercase tracking-widest">Masa: <span id="live-timer">0</span>s</div>
+            <div class="bg-indigo-600 text-white px-4 py-1 rounded-full font-black text-sm">⭐ <span id="current-score">0</span></div>
           </div>
-          
           <div class="timer-container"><div id="timer-bar"></div></div>
-          
           <div id="quiz-area" class="hidden">
-            <p id="q-counter" class="text-white/50 text-xs font-bold mb-2 uppercase tracking-tighter"></p>
-            <h2 id="question-text" class="text-2xl font-bold text-white mb-8 min-h-[70px] leading-tight"></h2>
+            <h2 id="question-text" class="text-2xl font-bold text-white mb-8 min-h-[70px]"></h2>
             <div id="answers-container" class="grid grid-cols-1 gap-4"></div>
           </div>
-
-          <div id="collect-area" class="hidden relative h-72 bg-indigo-950/40 rounded-3xl overflow-hidden mb-2 border border-white/10"></div>
-
+          <div id="collect-area" class="hidden relative h-72 bg-indigo-950/40 rounded-3xl overflow-hidden border border-white/10"></div>
           <div id="memory-area" class="hidden grid grid-cols-3 gap-3"></div>
         </div>
-        
-        <button onclick="location.reload()" class="mt-6 text-white/40 hover:text-white transition-colors text-sm uppercase tracking-widest font-bold">← Berhenti Main</button>
       </div>
 
       <div id="result-screen" class="hidden text-center w-full">
         <div class="bg-white/10 backdrop-blur-xl rounded-[3rem] p-12 shadow-2xl border border-white/20">
-          <h2 id="result-title" class="text-4xl font-black text-yellow-300 mb-4">Hebat Aidin!</h2>
-          <p class="text-white text-lg mb-2">Bintang Aidin:</p>
-          <div class="text-7xl mb-10 drop-shadow-lg">⭐ <span id="result-stars" class="text-yellow-400 font-black">0</span></div>
-          <button onclick="location.reload()" class="w-full bg-emerald-500 text-white font-black py-5 rounded-2xl text-2xl border-b-8 border-emerald-700 hover:scale-105 active:border-b-0 active:translate-y-2 transition-all">Main Lagi 🚀</button>
+          <h2 id="result-title" class="text-4xl font-black text-yellow-300 mb-4">Tamat!</h2>
+          <div class="space-y-2 mb-8 text-white">
+            <p class="text-xl">Bintang: <span id="result-stars" class="text-yellow-400 font-black">0</span></p>
+            <p class="text-lg opacity-80">Masa Diambil: <span id="result-time" class="font-bold">0</span> saat</p>
+          </div>
+          <button onclick="location.reload()" class="w-full bg-emerald-500 text-white font-black py-5 rounded-2xl text-2xl border-b-8 border-emerald-700 transition-all">Main Lagi 🚀</button>
         </div>
       </div>
-
     </div>
   </div>
 
   <script>
-    // URL Gambar Aidin (Tukar di sini!)
     const GAMBAR_AIDIN_SENYUM = "https://i.postimg.cc/Bbz5NjGs/happy.jpg"; 
     const GAMBAR_AIDIN_SEDIH = "https://i.postimg.cc/fWPYGS6w/sad.jpg";   
-    
     const SOUND_BETUL = new Audio("https://assets.mixkit.co/active_storage/sfx/2000/2000-preview.mp3");
     const SOUND_SALAH = new Audio("https://assets.mixkit.co/active_storage/sfx/2959/2959-preview.mp3");
 
-    let highScore = localStorage.getItem('aidinHighScore') || 0;
-    let score = 0;
-    let currentMode = '';
-    let timer;
-    document.getElementById('high-score').textContent = highScore;
+    let score = 0, currentMode = '', timer, startTime, totalTimeSpent = 0;
+    let memoryMatches = 0;
+
+    // Load Rekod
+    function loadRecords() {
+        document.getElementById('rec-quiz').textContent = localStorage.getItem('aidin_quiz') || '-';
+        document.getElementById('rec-collect').textContent = localStorage.getItem('aidin_collect') || '-';
+        document.getElementById('rec-memory').textContent = (localStorage.getItem('aidin_memory_time') || '-') + 's';
+    }
+    loadRecords();
 
     function reactAidin(isCorrect, msg) {
         const div = document.getElementById('aidin-reaction');
@@ -125,156 +114,98 @@
         setTimeout(() => div.style.display = 'none', 1500);
     }
 
-    const allQuestions = [
-        { q: 'Apakah nama bulan kita puasa?', a: ['Ramadhan', 'Syawal'], c: 0 },
-        { q: 'Makan sebelum Subuh dipanggil apa?', a: ['Sahur', 'Berbuka'], c: 0 },
-        { q: 'Kita berbuka puasa waktu azan apa?', a: ['Zohor', 'Maghrib'], c: 1 },
-        { q: 'Buah yang Aidin makan waktu berbuka?', a: ['Kurma', 'Epal'], c: 0 },
-        { q: 'Solat yang ada dalam bulan Ramadhan?', a: ['Tarawih', 'Raya'], c: 0 },
-        { q: 'Boleh ke kita makan dengan sengaja?', a: ['Tak Boleh', 'Boleh'], c: 0 },
-        { q: 'Siapa seronok tengok Aidin puasa?', a: ['Babah & Ummi', 'Kucing'], c: 0 },
-        { q: 'Habis puasa kita sambut Hari apa?', a: ['Hari Raya', 'Hari Jadi'], c: 0 },
-        { q: 'Bulan Ramadhan bulan yang penuh apa?', a: ['Pahala', 'Duit'], c: 0 },
-        { q: 'Waktu puasa kita kena sabar tak?', a: ['Kena Sabar', 'Tak payah'], c: 0 },
-        { q: 'Puasa itu Rukun Islam ke berapa?', a: ['Ketiga', 'Pertama'], c: 0 },
-        { q: 'Kita puasa dari Subuh sampai bila?', a: ['Maghrib', 'Isyak'], c: 0 },
-        { q: 'Waktu puasa boleh cakap jahat tak?', a: ['Tak Boleh', 'Boleh'], c: 0 },
-        { q: 'Kita solat Tarawih di mana?', a: ['Masjid/Rumah', 'Pasar'], c: 0 },
-        { q: 'Apa kita buat sebelum makan berbuka?', a: ['Baca Doa', 'Terus Makan'], c: 0 }
-    ];
-
-    let quizSet = [];
-    let qIdx = 0;
+    // GAME 1: KUIZ (10 soalan rawak)
+    const allQuestions = [{ q: 'Makan sebelum Subuh?', a: ['Sahur', 'Berbuka'], c: 0 },{ q: 'Buah sunnah berbuka?', a: ['Kurma', 'Epal'], c: 0 },{ q: 'Solat malam Ramadhan?', a: ['Tarawih', 'Zohor'], c: 0 },{ q: 'Boleh makan sengaja?', a: ['Tak Boleh', 'Boleh'], c: 0 },{ q: 'Lepas Ramadhan sambut?', a: ['Hari Raya', 'Hari Jadi'], c: 0 }];
+    let qIdx = 0, quizSet = [];
 
     function startQuiz() {
-        qIdx = 0;
-        quizSet = [...allQuestions].sort(() => Math.random() - 0.5).slice(0, 10);
+        qIdx = 0; quizSet = allQuestions.sort(() => Math.random() - 0.5).slice(0,5);
         showQuestion();
     }
-
     function showQuestion() {
         if(qIdx >= quizSet.length) return finish();
         const q = quizSet[qIdx];
-        document.getElementById('q-counter').textContent = `Soalan ${qIdx + 1} / 10`;
         document.getElementById('question-text').textContent = q.q;
         const cont = document.getElementById('answers-container');
         cont.innerHTML = '';
-        startTimer(12, showQuestion); 
-        
         q.a.forEach((ans, i) => {
             const b = document.createElement('button');
-            b.className = 'bg-white/10 p-5 rounded-2xl text-white font-black hover:bg-white/20 active:scale-95 transition-all text-xl border border-white/10 shadow-lg';
+            b.className = 'bg-white/10 p-5 rounded-2xl text-white font-bold text-xl border border-white/10';
             b.textContent = ans;
             b.onclick = () => {
-                clearInterval(timer);
-                if(i === q.c) { score += 10; reactAidin(true, "Aidin Bijak!"); }
-                else reactAidin(false);
-                qIdx++;
-                document.getElementById('current-score').textContent = score;
-                setTimeout(showQuestion, 1200);
+                if(i === q.c) { score += 10; reactAidin(true); } else reactAidin(false);
+                qIdx++; document.getElementById('current-score').textContent = score;
+                showQuestion();
             };
             cont.appendChild(b);
         });
     }
 
+    // GAME 2: TANGKAP BINTANG
     function startCollect() {
-        startTimer(20, finish);
-        const area = document.getElementById('collect-area');
-        area.innerHTML = '';
+        let count = 0;
         let spawn = setInterval(() => {
-            if(currentMode !== 'collect') { clearInterval(spawn); return; }
+            if(currentMode !== 'collect' || totalTimeSpent >= 20) { clearInterval(spawn); return; }
             const s = document.createElement('div');
-            s.className = 'absolute text-5xl cursor-pointer select-none';
-            s.style.left = Math.random() * 80 + 10 + '%';
-            s.style.top = Math.random() * 80 + 10 + '%';
+            s.className = 'absolute text-5xl cursor-pointer';
+            s.style.left = Math.random() * 80 + 10 + '%'; s.style.top = Math.random() * 80 + 10 + '%';
             s.textContent = '⭐';
             s.onclick = () => { score += 2; document.getElementById('current-score').textContent = score; s.remove(); };
-            area.appendChild(s);
+            document.getElementById('collect-area').appendChild(s);
             setTimeout(() => s.remove(), 1000);
         }, 600);
     }
 
-    const memData = [
-        { img: '🕌', txt: 'Masjid' }, { img: '🌴', txt: 'Kurma' },
-        { img: '🌙', txt: 'Bulan' }, { img: '🍛', txt: 'Nasi' },
-        { img: '✨', txt: 'Pahala' }, { img: '💖', txt: 'Sayang' }
-    ];
-    let flipped = [];
-
+    // GAME 3: MEMORI
+    const memData = [{ img: '🕌', txt: 'Masjid' }, { img: '🌴', txt: 'Kurma' }, { img: '🌙', txt: 'Bulan' }];
     function startMemory() {
-        startTimer(60, finish);
-        const area = document.getElementById('memory-area');
-        area.innerHTML = '';
-        let cards = [];
-        memData.forEach(d => {
-            cards.push({ val: d.img, id: d.img });
-            cards.push({ val: d.txt, id: d.img });
-        });
-        cards.sort(() => Math.random() - 0.5);
-
-        cards.forEach(data => {
+        memoryMatches = 0;
+        const area = document.getElementById('memory-area'); area.innerHTML = '';
+        let cards = []; memData.forEach(d => { cards.push({ v: d.img, id: d.img }); cards.push({ v: d.txt, id: d.img }); });
+        cards.sort(() => Math.random() - 0.5).forEach(data => {
             const c = document.createElement('div');
             c.className = 'card';
-            c.innerHTML = `<div class="card-face card-front">🕌</div><div class="card-face card-back">${data.val}</div>`;
+            c.innerHTML = `<div class="card-face card-front">🕌</div><div class="card-face card-back">${data.v}</div>`;
             c.onclick = () => {
                 if(flipped.length < 2 && !c.classList.contains('flipped')) {
-                    c.classList.add('flipped');
-                    flipped.push({ el: c, id: data.id });
+                    c.classList.add('flipped'); flipped.push({ el: c, id: data.id });
                     if(flipped.length === 2) {
                         if(flipped[0].id === flipped[1].id) {
-                            score += 15;
-                            document.getElementById('current-score').textContent = score;
-                            reactAidin(true, "Padanan Betul!");
-                            flipped = [];
-                        } else {
-                            setTimeout(() => { flipped.forEach(f => f.el.classList.remove('flipped')); flipped = []; }, 1000);
-                        }
+                            score += 15; memoryMatches++; reactAidin(true, "Padan!"); flipped = [];
+                            if(memoryMatches === memData.length) setTimeout(finish, 500);
+                        } else { setTimeout(() => { flipped.forEach(f => f.el.classList.remove('flipped')); flipped = []; }, 800); }
+                        document.getElementById('current-score').textContent = score;
                     }
                 }
             };
             area.appendChild(c);
         });
     }
+    let flipped = [];
 
-    function startTimer(sec, onEnd) {
-        clearInterval(timer);
+    function startTimer() {
+        startTime = Date.now();
         const bar = document.getElementById('timer-bar');
-        let total = sec * 10;
-        let current = total;
+        const limit = (currentMode === 'memory' ? 60 : (currentMode === 'collect' ? 20 : 60));
         timer = setInterval(() => {
-            current--;
-            bar.style.width = (current / total) * 100 + '%';
-            if(current <= 20) bar.style.background = '#ef4444';
-            else bar.style.background = '#fbbf24';
-            if(current <= 0) { clearInterval(timer); onEnd(); }
+            totalTimeSpent = Math.floor((Date.now() - startTime) / 1000);
+            document.getElementById('live-timer').textContent = totalTimeSpent;
+            let progress = 100 - (totalTimeSpent / limit * 100);
+            bar.style.width = Math.max(0, progress) + '%';
+            if(totalTimeSpent >= limit) finish();
         }, 100);
     }
 
     function startGame(mode) {
-        currentMode = mode;
-        score = 0;
-        document.getElementById('current-score').textContent = '0';
+        currentMode = mode; score = 0; totalTimeSpent = 0;
         document.getElementById('home-screen').classList.add('hidden');
         document.getElementById('game-screen').classList.remove('hidden');
-        document.getElementById('quiz-area').classList.add('hidden');
-        document.getElementById('collect-area').classList.add('hidden');
-        document.getElementById('memory-area').classList.add('hidden');
-        
-        if(mode === 'quiz') { 
-            document.getElementById('game-label').textContent = 'Kuiz Ramadhan';
-            document.getElementById('quiz-area').classList.remove('hidden'); 
-            startQuiz(); 
-        }
-        if(mode === 'collect') { 
-            document.getElementById('game-label').textContent = 'Tangkap Bintang';
-            document.getElementById('collect-area').classList.remove('hidden'); 
-            startCollect(); 
-        }
-        if(mode === 'memory') { 
-            document.getElementById('game-label').textContent = 'Kad Memori';
-            document.getElementById('memory-area').classList.remove('hidden'); 
-            startMemory(); 
-        }
+        ['quiz-area','collect-area','memory-area'].forEach(a => document.getElementById(a).classList.add('hidden'));
+        document.getElementById(mode + '-area').classList.remove('hidden');
+        startTimer();
+        if(mode === 'quiz') startQuiz();
+        if(mode === 'collect') startCollect();
+        if(mode === 'memory') startMemory();
     }
 
     function finish() {
@@ -282,21 +213,27 @@
         document.getElementById('game-screen').classList.add('hidden');
         document.getElementById('result-screen').classList.remove('hidden');
         document.getElementById('result-stars').textContent = score;
-        if(score > highScore) {
-            localStorage.setItem('aidinHighScore', score);
-            document.getElementById('result-title').textContent = "Rekod Baru! 🏆";
+        document.getElementById('result-time').textContent = totalTimeSpent;
+
+        // Simpan Rekod
+        if(currentMode === 'quiz') {
+            let old = localStorage.getItem('aidin_quiz') || 0;
+            if(score > old) localStorage.setItem('aidin_quiz', score);
+        } else if(currentMode === 'collect') {
+            let old = localStorage.getItem('aidin_collect') || 0;
+            if(score > old) localStorage.setItem('aidin_collect', score);
+        } else if(currentMode === 'memory') {
+            let old = localStorage.getItem('aidin_memory_time') || 999;
+            if(totalTimeSpent < old) localStorage.setItem('aidin_memory_time', totalTimeSpent);
         }
     }
 
-    // BG Decoration
     const bg = document.getElementById('background-elements');
     const items = ['🕌', '🌴', '🟢', '⭐'];
     setInterval(() => {
-        const i = document.createElement('div');
-        i.className = 'bg-item';
+        const i = document.createElement('div'); i.className = 'bg-item';
         i.textContent = items[Math.floor(Math.random()*items.length)];
-        i.style.left = Math.random()*100+'%';
-        bg.appendChild(i);
+        i.style.left = Math.random()*100+'%'; bg.appendChild(i);
         setTimeout(() => i.remove(), 15000);
     }, 2500);
   </script>
