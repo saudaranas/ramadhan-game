@@ -3,19 +3,38 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Game Ramadhan Aidin - Edisi Kanak-Kanak</title>
+  <title>Game Ramadhan Aidin by Babah</title>
   <script src="https://cdn.tailwindcss.com/3.4.17"></script>
   <link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@400;600;700;800&display=swap" rel="stylesheet">
   <style>
     * { font-family: 'Baloo 2', cursive; }
+    
     @keyframes bounce-pop { 
       0% { transform: scale(0); opacity: 0; } 
       70% { transform: scale(1.1); } 
       100% { transform: scale(1); opacity: 1; } 
     }
+
+    /* Animasi Objek Bergerak di Background */
+    @keyframes float-bg {
+      0% { transform: translateY(0) translateX(0) rotate(0deg); opacity: 0; }
+      10% { opacity: 0.3; }
+      90% { opacity: 0.3; }
+      100% { transform: translateY(-100vh) translateX(50px) rotate(360deg); opacity: 0; }
+    }
+
+    .bg-item {
+      position: absolute;
+      bottom: -100px;
+      font-size: 2rem;
+      pointer-events: none;
+      z-index: 1;
+      animation: float-bg 15s linear infinite;
+    }
+
     .aidin-pop {
       position: fixed;
-      top: 30px;
+      top: 80px; /* Jarak dari tajuk */
       width: 140px;
       z-index: 100;
       display: none;
@@ -33,14 +52,19 @@
     .bubble {
       background: white; padding: 6px 10px; border-radius: 12px;
       font-weight: bold; font-size: 13px; margin-top: 8px;
-      text-align: center; border: 2px solid #FFD700;
+      text-align: center; border: 2px solid #FFD700; color: #333;
     }
-    .star-bg { position: absolute; background: #FFD700; border-radius: 50%; opacity: 0.4; }
+    .star-bg { position: absolute; background: #FFD700; border-radius: 50%; opacity: 0.2; }
   </style>
 </head>
 <body class="h-full overflow-hidden bg-[#1a1a3e]">
-  <div id="app" class="min-h-full w-full relative" style="background: linear-gradient(180deg, #1a1a3e 0%, #2d1b4e 100%);">
-    <div id="stars-container" class="fixed inset-0 pointer-events-none"></div>
+  <div id="app" class="min-h-full w-full relative overflow-hidden" style="background: linear-gradient(180deg, #1a1a3e 0%, #2d1b4e 100%);">
+    
+    <div class="absolute top-4 w-full text-center z-50 pointer-events-none">
+        <h2 class="text-white/40 text-sm tracking-widest uppercase font-bold">Game Ramadhan Aidin by Babah</h2>
+    </div>
+
+    <div id="background-elements" class="fixed inset-0 pointer-events-none"></div>
 
     <div id="aidin-reaction" class="aidin-pop">
         <div class="aidin-container">
@@ -50,20 +74,19 @@
     </div>
 
     <div class="relative z-10 min-h-full flex flex-col items-center justify-center p-4">
+      
       <div id="home-screen" class="text-center max-w-md w-full">
-        <div class="text-7xl mb-4">🌙</div>
-        <h1 class="text-4xl font-extrabold text-yellow-300 mb-2">Ramadhan Aidin</h1>
-        <p class="text-white mb-8 italic">"Puasa bukan lapar saja, dapat pahala banyak!"</p>
+        <div class="text-8xl mb-6">🌙</div>
+        <h1 class="text-5xl font-extrabold text-yellow-300 mb-2 drop-shadow-xl">Ramadhan Aidin</h1>
+        <p class="text-pink-300 text-xl font-bold mb-8">by Babah ❤️</p>
         
-        <button onclick="startGame()" class="w-full bg-yellow-400 text-indigo-900 text-2xl font-bold py-5 rounded-3xl shadow-xl hover:scale-105 transition-transform border-b-8 border-yellow-600">
+        <button onclick="startGame()" class="w-full bg-yellow-400 text-indigo-900 text-3xl font-extrabold py-6 rounded-3xl shadow-2xl hover:scale-105 transition-transform border-b-8 border-yellow-600 active:border-b-0 active:translate-y-2">
           JOM MAIN! 🚀
         </button>
 
-        <div class="mt-10 grid grid-cols-2 gap-4">
-          <div class="bg-white/10 backdrop-blur-md rounded-2xl p-4 border border-white/20">
-            <p class="text-gray-300 text-xs">REKOD TERBAIK</p>
-            <p class="text-pink-300 text-3xl font-bold">⭐ <span id="high-score">0</span></p>
-          </div>
+        <div class="mt-12 bg-white/10 backdrop-blur-md rounded-2xl p-4 border border-white/20 inline-block px-8">
+            <p class="text-gray-300 text-xs tracking-widest">REKOD TERBAIK</p>
+            <p class="text-yellow-300 text-4xl font-bold">⭐ <span id="high-score">0</span></p>
         </div>
       </div>
 
@@ -77,24 +100,25 @@
             <div class="bg-indigo-600 text-white px-4 py-1 rounded-full font-bold">Skor: <span id="quiz-score">0</span></div>
           </div>
           <p id="q-counter" class="text-white/60 text-sm mb-2"></p>
-          <h2 id="question-text" class="text-2xl font-bold text-white mb-8 min-h-[60px]">...</h2>
+          <h2 id="question-text" class="text-2xl font-bold text-white mb-8 min-h-[80px]">...</h2>
           <div id="answers-container" class="space-y-4"></div>
         </div>
       </div>
 
       <div id="result-screen" class="hidden text-center max-w-md w-full">
         <div class="bg-white/10 backdrop-blur-xl rounded-3xl p-10 shadow-2xl border border-white/20">
-          <h2 id="result-title" class="text-3xl font-extrabold text-yellow-300 mb-2">Hebat Aidin!</h2>
-          <p class="text-white text-lg mb-6">Aidin kumpul <span id="result-stars" class="text-yellow-400 font-bold">0</span> bintang!</p>
-          <button onclick="location.reload()" class="w-full bg-emerald-500 text-white font-bold py-4 rounded-2xl text-xl border-b-4 border-emerald-700">Main Lagi</button>
+          <h2 id="result-title" class="text-4xl font-extrabold text-yellow-300 mb-4">Hebat Aidin!</h2>
+          <p class="text-white text-xl mb-2">Aidin kumpul:</p>
+          <div class="text-6xl mb-8">⭐ <span id="result-stars" class="text-yellow-400 font-bold">0</span></div>
+          <button onclick="location.reload()" class="w-full bg-emerald-500 text-white font-extrabold py-5 rounded-2xl text-2xl border-b-4 border-emerald-700 hover:scale-105 transition-transform">Main Lagi</button>
         </div>
       </div>
     </div>
   </div>
 
   <script>
-    const GAMBAR_AIDIN_SENYUM = "https://cdn-icons-png.flaticon.com/512/3048/3048122.png"; 
-    const GAMBAR_AIDIN_SEDIH = "https://cdn-icons-png.flaticon.com/512/3048/3048183.png";   
+    const GAMBAR_AIDIN_SENYUM = "https://i.postimg.cc/Bbz5NjGs/happy.jpg"; 
+    const GAMBAR_AIDIN_SEDIH = "https://i.postimg.cc/fWPYGS6w/sad.jpg";   
 
     const SOUND_BETUL = new Audio("https://assets.mixkit.co/active_storage/sfx/2000/2000-preview.mp3");
     const SOUND_SALAH = new Audio("https://assets.mixkit.co/active_storage/sfx/2959/2959-preview.mp3");
@@ -108,28 +132,17 @@
 
     document.getElementById('high-score').textContent = highScore;
 
-    // 20 Soalan Mesra Kanak-Kanak 6 Tahun
     const quizQuestions = [
       { q: 'Apakah nama bulan puasa?', a: ['Ramadhan', 'Syawal', 'Raya'], c: 0 },
       { q: 'Kita mula puasa waktu bila?', a: ['Zohor', 'Subuh', 'Malam'], c: 1 },
       { q: 'Makan sebelum Subuh namanya apa?', a: ['Sahur', 'Berbuka', 'Sarapan'], c: 0 },
-      { q: 'Boleh ke kita makan dengan sengaja waktu siang?', a: ['Boleh', 'Tak Boleh', 'Boleh sikit'], c: 1 },
       { q: 'Apa kita buat waktu Maghrib?', a: ['Berbuka', 'Tidur', 'Mandi'], c: 0 },
-      { q: 'Solat malam di bulan Ramadhan?', a: ['Tarawih', 'Jumaat', 'Dhuha'], c: 0 },
-      { q: 'Kalau nampak kawan makan, kita kena buat apa?', a: ['Marah kawan', 'Sabar & senyum', 'Ikut makan'], c: 1 },
-      { q: 'Buah yang sedap dimakan waktu berbuka?', a: ['Buah Kurma', 'Buah Durian', 'Buah Rambutan'], c: 0 },
+      { q: 'Buah yang sedap dimakan waktu berbuka?', a: ['Buah Kurma', 'Buah Durian', 'Epal'], c: 0 },
       { q: 'Siapa yang beri kita pahala puasa?', a: ['Allah', 'Polis', 'Kawan'], c: 0 },
-      { q: 'Lepas habis bulan puasa, kita sambut apa?', a: ['Hari Raya', 'Hari Lahir', 'Hari Sukan'], c: 0 },
-      { q: 'Waktu puasa kita kena jaga apa?', a: ['Jaga mulut (tak cakap jahat)', 'Jaga mainan', 'Jaga kucing'], c: 0 },
-      { q: 'Puasa itu salah satu daripada Rukun apa?', a: ['Rukun Islam', 'Rukun Negara', 'Rukun Tetangga'], c: 0 },
-      { q: 'Budak baik kalau puasa dapat apa?', a: ['Banyak Pahala', 'Banyak Gula-gula', 'Banyak Kerja'], c: 0 },
-      { q: 'Air apa yang paling sihat waktu berbuka?', a: ['Air Masak/Kosong', 'Air Gas', 'Air Coklat'], c: 0 },
-      { q: 'Al-Quran diturunkan dalam bulan apa?', a: ['Ramadhan', 'Muharram', 'Safat'], c: 0 },
-      { q: 'Boleh ke kita marah-marah waktu puasa?', a: ['Boleh', 'Tak Boleh', 'Suka hati'], c: 1 },
-      { q: 'Warna kegemaran bulan Ramadhan (pada lukisan)?', a: ['Kuning Bulan', 'Hitam', 'Merah'], c: 0 },
-      { q: 'Apa kita cakap bila orang ajak makan?', a: ['"Saya sedang puasa"', '"Jom"', '"Tak mahu"'], c: 0 },
-      { q: 'Kita berbuka puasa bila dengar azan apa?', a: ['Maghrib', 'Asar', 'Zohor'], c: 0 },
-      { q: 'Siapa seronok bila Aidin puasa?', a: ['Ibu & Ayah', 'Kucing', 'Sotong'], c: 0 }
+      { q: 'Lepas habis puasa, kita sambut apa?', a: ['Hari Raya', 'Hari Lahir', 'Hari Sukan'], c: 0 },
+      { q: 'Waktu puasa kita tak boleh apa?', a: ['Makan & Minum', 'Main Mainan', 'Tidur'], c: 0 },
+      { q: 'Solat malam di bulan Ramadhan?', a: ['Tarawih', 'Dhuha', 'Jumaat'], c: 0 },
+      { q: 'Kita kena cakap yang baik-baik sahaja?', a: ['Ya', 'Tidak', 'Tak tahu'], c: 0 }
     ];
 
     function showAidinReaction(isCorrect) {
@@ -154,29 +167,27 @@
     function startGame() {
       totalScore = 0;
       currentQuestionIdx = 0;
-      // Shuffle soalan
       shuffledQuestions = [...quizQuestions].sort(() => Math.random() - 0.5);
       showScreen('quiz-screen');
       showQuestion();
     }
 
     function showQuestion() {
-      if (currentQuestionIdx >= 10) { // Main 10 soalan sahaja setiap sesi
+      if (currentQuestionIdx >= 10) {
         finishGame();
         return;
       }
-      
       clearInterval(timerInterval);
       potentialStars = 5;
       updateStarDisplay();
-      document.getElementById('q-counter').textContent = `Soalan ${currentQuestionIdx + 1} / 10`;
+      document.getElementById('q-counter').textContent = `SOALAN ${currentQuestionIdx + 1} / 10`;
 
       timerInterval = setInterval(() => {
         if (potentialStars > 1) {
           potentialStars--;
           updateStarDisplay();
         }
-      }, 3000); // 3 saat untuk satu bintang (lebih santai untuk kanak-kanak)
+      }, 3000);
 
       const q = shuffledQuestions[currentQuestionIdx];
       document.getElementById('question-text').textContent = q.q;
@@ -185,7 +196,7 @@
 
       q.a.forEach((ans, idx) => {
         const btn = document.createElement('button');
-        btn.className = 'w-full bg-white/10 hover:bg-white/30 text-white font-bold py-4 rounded-2xl border border-white/10 text-lg transition-all';
+        btn.className = 'w-full bg-white/10 hover:bg-white/30 text-white font-bold py-5 rounded-2xl border border-white/10 text-xl transition-all shadow-lg active:scale-95';
         btn.textContent = ans;
         btn.onclick = () => checkAnswer(idx, q.c);
         container.appendChild(btn);
@@ -223,17 +234,35 @@
       document.getElementById(id).classList.remove('hidden');
     }
 
-    // Stars Background
-    const container = document.getElementById('stars-container');
-    for (let i = 0; i < 40; i++) {
+    // Generator Latar Belakang (Bintang & Objek Ramadhan)
+    const bgContainer = document.getElementById('background-elements');
+    const items = ['🕌', '🌴', '🏮', '🟢', '⭐', '✨'];
+    
+    // Buat Bintang Statik
+    for (let i = 0; i < 30; i++) {
         const star = document.createElement('div');
         star.className = 'star-bg';
         star.style.width = Math.random() * 3 + 'px';
         star.style.height = star.style.width;
         star.style.left = Math.random() * 100 + '%';
         star.style.top = Math.random() * 100 + '%';
-        container.appendChild(star);
+        bgContainer.appendChild(star);
     }
+
+    // Buat Objek Ramadhan Bergerak
+    function createFloatingItem() {
+        const item = document.createElement('div');
+        item.className = 'bg-item';
+        item.textContent = items[Math.floor(Math.random() * items.length)];
+        item.style.left = Math.random() * 100 + '%';
+        item.style.animationDuration = (Math.random() * 10 + 10) + 's';
+        bgContainer.appendChild(item);
+        
+        // Buang elemen selepas animasi tamat untuk jimat memori
+        setTimeout(() => { item.remove(); }, 20000);
+    }
+
+    setInterval(createFloatingItem, 2000); // Muncul setiap 2 saat
   </script>
 </body>
 </html>
