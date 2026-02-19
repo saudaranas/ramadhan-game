@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="ms">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🌙 Game Ramadhan - Untuk Anak Saya</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <!-- SKRIN UTAMA -->
+    <div id="mainScreen" class="screen active">
+        <h1>🌙 SELAMAT BERPUASA! 🌙</h1>
+        <p class="subtitle">Klik bulan untuk mula bermain!</p>
+        
+        <div class="moon-container" onclick="showMenu()">
+            <div class="moon">🌙</div>
+        </div>
+        
+        <div class="stars-bg">
+            <span class="star">⭐</span>
+            <span class="star">✨</span>
+            <span class="star">⭐</span>
+            <span class="star">✨</span>
+            <span class="star">⭐</span>
+        </div>
+    </div>
+
+    <!-- MENU PILIHAN GAME -->
+    <div id="menuScreen" class="screen">
+        <h2>Pilih Permainan! 🎮</h2>
+        <div class="menu-buttons">
+            <button onclick="startGame('catch')" class="game-btn">
+                🌟 Tangkap Bintang
+            </button>
+            <button onclick="startGame('decorate')" class="game-btn">
+                🏮 Hias Pelita
+            </button>
+            <button onclick="startGame('iftar')" class="game-btn">
+                🍽️ Sediakan Iftar
+            </button>
+            <button onclick="showStickers()" class="game-btn special">
+                ⭐ Chart Puasa Saya
+            </button>
+        </div>
+    </div>
+
+    <!-- GAME 1: TANGKAP BINTANG -->
+    <div id="catchGame" class="screen game-screen">
+        <div class="header">
+            <button onclick="backToMenu()" class="back-btn">🏠 Balik</button>
+            <div class="score">Bintang: <span id="score">0</span></div>
+        </div>
+        <h3>Tangkap Bintang Ramadhan! ⭐</h3>
+        <div id="gameArea" class="game-area"></div>
+    </div>
+
+    <!-- GAME 2: HIAS PELITA -->
+    <div id="decorateGame" class="screen game-screen">
+        <div class="header">
+            <button onclick="backToMenu()" class="back-btn">🏠 Balik</button>
+        </div>
+        <h3>Hias Pelita Ramadhan! 🏮</h3>
+        <div class="lantern-area">
+            <div id="lantern" class="lantern">🏮</div>
+            <div class="decoration-palette">
+                <button onclick="addDecoration('⭐')" class="deco-btn">⭐</button>
+                <button onclick="addDecoration('✨')" class="deco-btn">✨</button>
+                <button onclick="addDecoration('💛')" class="deco-btn">💛</button>
+                <button onclick="addDecoration('🌙')" class="deco-btn">🌙</button>
+                <button onclick="addDecoration('🌟')" class="deco-btn">🌟</button>
+                <button onclick="clearDecoration()" class="deco-btn clear">🗑️ Clear</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- GAME 3: SEDIAKAN IFTAR -->
+    <div id="iftarGame" class="screen game-screen">
+        <div class="header">
+            <button onclick="backToMenu()" class="back-btn">🏠 Balik</button>
+        </div>
+        <h3>Sediakan Makanan Iftar! 🍽️</h3>
+        <div class="iftar-area">
+            <div id="plate" class="plate">🍽️</div>
+            <div class="food-items">
+                <div draggable="true" class="food-item" ondragstart="drag(event)" data-food="🍉">🍉</div>
+                <div draggable="true" class="food-item" ondragstart="drag(event)" data-food="🥤">🥤</div>
+                <div draggable="true" class="food-item" ondragstart="drag(event)" data-food="🍚">🍚</div>
+                <div draggable="true" class="food-item" ondragstart="drag(event)" data-food="🍗">🍗</div>
+                <div draggable="true" class="food-item" ondragstart="drag(event)" data-food="🥗">🥗</div>
+                <div draggable="true" class="food-item" ondragstart="drag(event)" data-food="🧃">🧃</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- STICKER CHART -->
+    <div id="stickerScreen" class="screen">
+        <div class="header">
+            <button onclick="backToMenu()" class="back-btn">🏠 Balik</button>
+        </div>
+        <h2>Chart Puasa Saya! 🌟</h2>
+        <p class="sticker-subtitle">Tekan hari yang kamu puasa!</p>
+        <div class="sticker-grid" id="stickerGrid"></div>
+        <div class="sticker-total">
+            Jumlah Puasa: <span id="totalFasting">0</span> hari! 🎉
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
