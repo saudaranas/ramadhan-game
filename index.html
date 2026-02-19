@@ -1,110 +1,226 @@
-<!DOCTYPE html>
-<html lang="ms">
+<!doctype html>
+<html lang="ms" class="h-full">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>🌙 Game Ramadhan - Untuk Anak Saya</title>
-    <link rel="stylesheet" href="style.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Game Ramadhan Aidin</title>
+  <script src="https://cdn.tailwindcss.com/3.4.17"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@400;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    * { font-family: 'Baloo 2', cursive; }
+    
+    @keyframes float { 0%, 100% { transform: translateY(0px); } 50% { transform: translateY(-10px); } }
+    @keyframes bounce-in { 0% { transform: scale(0); opacity: 0; } 50% { transform: scale(1.2); } 100% { transform: scale(1); opacity: 1; } }
+    
+    .float { animation: float 3s ease-in-out infinite; }
+    
+    /* Animasi Reaksi Aidin */
+    .aidin-pop {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      width: 150px;
+      height: 150px;
+      z-index: 50;
+      display: none;
+      animation: bounce-in 0.5s ease-out forwards;
+    }
+
+    .aidin-img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+      filter: drop-shadow(0 0 10px rgba(255,255,255,0.5));
+    }
+
+    .star { position: absolute; background: #FFD700; border-radius: 50%; opacity: 0.6; }
+  </style>
 </head>
-<body>
-    <!-- SKRIN UTAMA -->
-    <div id="mainScreen" class="screen active">
-        <h1>🌙 SELAMAT BERPUASA! 🌙</h1>
-        <p class="subtitle">Klik bulan untuk mula bermain!</p>
+<body class="h-full overflow-hidden bg-[#1a1a3e]">
+  
+  <div id="app" class="min-h-full w-full relative" style="background: linear-gradient(180deg, #1a1a3e 0%, #4a1d6b 100%);">
+    
+    <div id="stars-container" class="fixed inset-0 pointer-events-none"></div>
+
+    <div id="aidin-reaction" class="aidin-pop">
+        <img id="aidin-face" src="" class="aidin-img" alt="Aidin">
+        <div id="aidin-bubble" class="bg-white text-black p-2 rounded-xl text-center font-bold text-sm mt-1 border-2 border-yellow-400">Wah!</div>
+    </div>
+
+    <div class="relative z-10 min-h-full flex flex-col items-center justify-center p-4">
+      
+      <div id="home-screen" class="text-center max-w-md w-full">
+        <div class="float mb-4">
+            <span class="text-8xl">🌙</span>
+        </div>
+        <h1 class="text-4xl font-extrabold text-yellow-300 mb-2 drop-shadow-lg">Selamat Ramadhan!</h1>
+        <p class="text-2xl text-white mb-6">Halo <span class="text-pink-300 font-bold">Aidin</span>! 👋</p>
         
-        <div class="moon-container" onclick="showMenu()">
-            <div class="moon">🌙</div>
+        <div class="space-y-3">
+          <button onclick="startGame('quiz')" class="w-full bg-gradient-to-r from-emerald-500 to-teal-600 text-white text-xl font-bold py-4 rounded-2xl shadow-lg flex items-center justify-center gap-3 hover:scale-105 transition-transform">
+            <span class="text-2xl">🕌</span> <span>Kuiz Ramadhan</span>
+          </button>
+          <button onclick="startGame('collect')" class="w-full bg-gradient-to-r from-purple-500 to-pink-600 text-white text-xl font-bold py-4 rounded-2xl shadow-lg flex items-center justify-center gap-3 hover:scale-105 transition-transform">
+            <span class="text-2xl">⭐</span> <span>Kumpul Bintang</span>
+          </button>
         </div>
-        
-        <div class="stars-bg">
-            <span class="star">⭐</span>
-            <span class="star">✨</span>
-            <span class="star">⭐</span>
-            <span class="star">✨</span>
-            <span class="star">⭐</span>
-        </div>
-    </div>
 
-    <!-- MENU PILIHAN GAME -->
-    <div id="menuScreen" class="screen">
-        <h2>Pilih Permainan! 🎮</h2>
-        <div class="menu-buttons">
-            <button onclick="startGame('catch')" class="game-btn">
-                🌟 Tangkap Bintang
-            </button>
-            <button onclick="startGame('decorate')" class="game-btn">
-                🏮 Hias Pelita
-            </button>
-            <button onclick="startGame('iftar')" class="game-btn">
-                🍽️ Sediakan Iftar
-            </button>
-            <button onclick="showStickers()" class="game-btn special">
-                ⭐ Chart Puasa Saya
-            </button>
+        <div class="mt-8 grid grid-cols-2 gap-4">
+          <div class="bg-white/10 backdrop-blur rounded-2xl p-3 border border-white/20">
+            <p class="text-white text-xs uppercase tracking-wider">Skor Semasa</p>
+            <p class="text-yellow-300 text-2xl font-bold">⭐ <span id="total-stars">0</span></p>
+          </div>
+          <div class="bg-white/10 backdrop-blur rounded-2xl p-3 border border-white/20">
+            <p class="text-white text-xs uppercase tracking-wider">Rekod Terbaik</p>
+            <p class="text-pink-300 text-2xl font-bold">🏆 <span id="high-score">0</span></p>
+          </div>
         </div>
-    </div>
+      </div>
 
-    <!-- GAME 1: TANGKAP BINTANG -->
-    <div id="catchGame" class="screen game-screen">
-        <div class="header">
-            <button onclick="backToMenu()" class="back-btn">🏠 Balik</button>
-            <div class="score">Bintang: <span id="score">0</span></div>
+      <div id="quiz-screen" class="hidden text-center max-w-lg w-full">
+        <div class="bg-white/10 backdrop-blur rounded-3xl p-6 shadow-2xl border border-white/20">
+          <div class="flex justify-between items-center mb-4">
+            <button onclick="goHome()" class="text-white/80 hover:text-white">← Kembali</button>
+            <div class="text-yellow-300 font-bold">Mata: <span id="quiz-score">0</span></div>
+          </div>
+          <h2 id="question-text" class="text-2xl font-bold text-white mb-6">Soalan...</h2>
+          <div id="answers-container" class="space-y-3"></div>
         </div>
-        <h3>Tangkap Bintang Ramadhan! ⭐</h3>
-        <div id="gameArea" class="game-area"></div>
-    </div>
+      </div>
 
-    <!-- GAME 2: HIAS PELITA -->
-    <div id="decorateGame" class="screen game-screen">
-        <div class="header">
-            <button onclick="backToMenu()" class="back-btn">🏠 Balik</button>
+      <div id="result-screen" class="hidden text-center max-w-md w-full">
+        <div class="bg-white/10 backdrop-blur rounded-3xl p-8 shadow-2xl border border-white/20 bounce-in">
+          <h2 id="result-title" class="text-3xl font-extrabold text-yellow-300 mb-2">Hebat!</h2>
+          <p class="text-white mb-6">Aidin dapat <span id="result-stars" class="text-yellow-400 font-bold text-2xl">0</span> bintang!</p>
+          <button onclick="goHome()" class="w-full bg-yellow-400 text-black font-bold py-3 px-6 rounded-xl text-lg hover:scale-105 transition-transform">Ke Menu Utama</button>
         </div>
-        <h3>Hias Pelita Ramadhan! 🏮</h3>
-        <div class="lantern-area">
-            <div id="lantern" class="lantern">🏮</div>
-            <div class="decoration-palette">
-                <button onclick="addDecoration('⭐')" class="deco-btn">⭐</button>
-                <button onclick="addDecoration('✨')" class="deco-btn">✨</button>
-                <button onclick="addDecoration('💛')" class="deco-btn">💛</button>
-                <button onclick="addDecoration('🌙')" class="deco-btn">🌙</button>
-                <button onclick="addDecoration('🌟')" class="deco-btn">🌟</button>
-                <button onclick="clearDecoration()" class="deco-btn clear">🗑️ Clear</button>
-            </div>
-        </div>
-    </div>
+      </div>
 
-    <!-- GAME 3: SEDIAKAN IFTAR -->
-    <div id="iftarGame" class="screen game-screen">
-        <div class="header">
-            <button onclick="backToMenu()" class="back-btn">🏠 Balik</button>
-        </div>
-        <h3>Sediakan Makanan Iftar! 🍽️</h3>
-        <div class="iftar-area">
-            <div id="plate" class="plate">🍽️</div>
-            <div class="food-items">
-                <div draggable="true" class="food-item" ondragstart="drag(event)" data-food="🍉">🍉</div>
-                <div draggable="true" class="food-item" ondragstart="drag(event)" data-food="🥤">🥤</div>
-                <div draggable="true" class="food-item" ondragstart="drag(event)" data-food="🍚">🍚</div>
-                <div draggable="true" class="food-item" ondragstart="drag(event)" data-food="🍗">🍗</div>
-                <div draggable="true" class="food-item" ondragstart="drag(event)" data-food="🥗">🥗</div>
-                <div draggable="true" class="food-item" ondragstart="drag(event)" data-food="🧃">🧃</div>
-            </div>
-        </div>
     </div>
+  </div>
 
-    <!-- STICKER CHART -->
-    <div id="stickerScreen" class="screen">
-        <div class="header">
-            <button onclick="backToMenu()" class="back-btn">🏠 Balik</button>
-        </div>
-        <h2>Chart Puasa Saya! 🌟</h2>
-        <p class="sticker-subtitle">Tekan hari yang kamu puasa!</p>
-        <div class="sticker-grid" id="stickerGrid"></div>
-        <div class="sticker-total">
-            Jumlah Puasa: <span id="totalFasting">0</span> hari! 🎉
-        </div>
-    </div>
+  <script>
+    // --- KONFIGURASI GAMBAR AIDIN ---
+    // Gantikan URL di bawah dengan link gambar Aidin yang sebenar (format PNG transparent lagi bagus!)
+    const GAMBAR_AIDIN_SENYUM = "https://i.postimg.cc/Bbz5NjGs/happy.jpg"; // Contoh muka senyum
+    const GAMBAR_AIDIN_SEDIH = "https://i.postimg.cc/fWPYGS6w/sad.jpg";   // Contoh muka sedih
 
-    <script src="script.js"></script>
+    let totalStars = 0;
+    let highScore = localStorage.getItem('aidinHighScore') || 0;
+    let quizScore = 0;
+    let currentQuestion = 0;
+
+    document.getElementById('high-score').textContent = highScore;
+
+    const quizQuestions = [
+      { q: 'Apakah nama bulan suci umat Islam?', a: ['Ramadhan', 'Syawal', 'Rejab'], c: 0 },
+      { q: 'Bilakah kita mula berpuasa?', a: ['Waktu Zohor', 'Waktu Subuh', 'Waktu Isyak'], c: 1 },
+      { q: 'Makan sebelum subuh dipanggil?', a: ['Berbuka', 'Sarapan', 'Sahur'], c: 2 },
+      { q: 'Waktu Maghrib bermaksud?', a: ['Mula puasa', 'Berbuka puasa', 'Tidur'], c: 1 },
+      { q: 'Solat sunat selepas Isyak di bulan Ramadhan?', a: ['Solat Tarawih', 'Solat Jumaat', 'Solat Raya'], c: 0 }
+    ];
+
+    function showAidinReaction(isCorrect) {
+      const reactionDiv = document.getElementById('aidin-reaction');
+      const faceImg = document.getElementById('aidin-face');
+      const bubble = document.getElementById('aidin-bubble');
+      
+      reactionDiv.style.display = 'block';
+      if (isCorrect) {
+        faceImg.src = GAMBAR_AIDIN_SENYUM;
+        bubble.textContent = "Betul! Pandainya!";
+        bubble.className = "bg-green-100 text-green-700 p-2 rounded-xl text-center font-bold text-sm mt-1 border-2 border-green-500";
+      } else {
+        faceImg.src = GAMBAR_AIDIN_SEDIH;
+        bubble.textContent = "Alah... salah pula.";
+        bubble.className = "bg-red-100 text-red-700 p-2 rounded-xl text-center font-bold text-sm mt-1 border-2 border-red-500";
+      }
+
+      setTimeout(() => { reactionDiv.style.display = 'none'; }, 2000);
+    }
+
+    function startGame(game) {
+      if (game === 'quiz') {
+        quizScore = 0;
+        currentQuestion = 0;
+        document.getElementById('quiz-score').textContent = '0';
+        showQuestion();
+        showScreen('quiz-screen');
+      } else if (game === 'collect') {
+          alert('Mod Kumpul Bintang akan datang!');
+      }
+    }
+
+    function showQuestion() {
+      if (currentQuestion >= quizQuestions.length) {
+        finishGame();
+        return;
+      }
+      const q = quizQuestions[currentQuestion];
+      document.getElementById('question-text').textContent = q.q;
+      const container = document.getElementById('answers-container');
+      container.innerHTML = '';
+
+      q.a.forEach((ans, idx) => {
+        const btn = document.createElement('button');
+        btn.className = 'w-full bg-white/10 hover:bg-white/30 text-white font-bold py-4 rounded-2xl transition-all border border-white/10';
+        btn.textContent = ans;
+        btn.onclick = () => checkAnswer(idx, q.c);
+        container.appendChild(btn);
+      });
+    }
+
+    function checkAnswer(selected, correct) {
+      const isCorrect = selected === correct;
+      showAidinReaction(isCorrect);
+      
+      if (isCorrect) {
+        quizScore += 10;
+        document.getElementById('quiz-score').textContent = quizScore;
+      }
+
+      setTimeout(() => {
+        currentQuestion++;
+        showQuestion();
+      }, 1000);
+    }
+
+    function finishGame() {
+      totalStars = quizScore;
+      document.getElementById('result-stars').textContent = totalStars;
+      
+      if (totalStars > highScore) {
+        highScore = totalStars;
+        localStorage.setItem('aidinHighScore', highScore);
+        document.getElementById('high-score').textContent = highScore;
+        document.getElementById('result-title').textContent = "REKOD BARU! 🏆";
+      } else {
+        document.getElementById('result-title').textContent = "Selesai!";
+      }
+      
+      showScreen('result-screen');
+    }
+
+    function showScreen(id) {
+      ['home-screen', 'quiz-screen', 'result-screen'].forEach(s => document.getElementById(s).classList.add('hidden'));
+      document.getElementById(id).classList.remove('hidden');
+    }
+
+    function goHome() {
+      showScreen('home-screen');
+    }
+
+    // Generate Background Stars
+    const container = document.getElementById('stars-container');
+    for (let i = 0; i < 40; i++) {
+        const star = document.createElement('div');
+        star.className = 'star';
+        star.style.width = Math.random() * 4 + 'px';
+        star.style.height = star.style.width;
+        star.style.left = Math.random() * 100 + '%';
+        star.style.top = Math.random() * 100 + '%';
+        container.appendChild(star);
+    }
+  </script>
 </body>
 </html>
