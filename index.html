@@ -9,171 +9,214 @@
   <style>
     * { font-family: 'Baloo 2', cursive; }
     @keyframes bounce-pop { 0% { transform: scale(0); opacity: 0; } 70% { transform: scale(1.1); } 100% { transform: scale(1); opacity: 1; } }
-    @keyframes float-bg { 0% { transform: translateY(0) rotate(0deg); opacity: 0; } 10% { opacity: 0.3; } 90% { opacity: 0.3; } 100% { transform: translateY(-100vh) rotate(360deg); opacity: 0; } }
-    .bg-item { position: absolute; bottom: -100px; font-size: 2rem; pointer-events: none; z-index: 1; animation: float-bg 15s linear infinite; }
-    .aidin-pop { position: fixed; top: 120px; width: 140px; z-index: 100; display: none; animation: bounce-pop 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards; }
+    @keyframes float-bg { 0% { transform: translateY(0) rotate(0deg); opacity: 0; } 100% { transform: translateY(-100vh) rotate(360deg); opacity: 0; } }
+    .bg-item { position: absolute; bottom: -100px; font-size: 2.5rem; pointer-events: none; z-index: 1; animation: float-bg 12s linear infinite; }
+    
+    .aidin-pop { position: fixed; top: 110px; width: 130px; z-index: 100; display: none; animation: bounce-pop 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards; }
     .aidin-left { left: 20px; } .aidin-right { right: 20px; }
     .aidin-container { width: 95px; height: 95px; margin: 0 auto; border-radius: 50%; border: 4px solid #FFD700; overflow: hidden; background: #fff; box-shadow: 0 8px 20px rgba(0,0,0,0.4); }
     .aidin-img { width: 100%; height: 100%; object-fit: cover; }
-    .bubble { background: white; padding: 6px 10px; border-radius: 12px; font-weight: bold; font-size: 12px; margin-top: 5px; text-align: center; border: 2px solid #FFD700; color: #333; }
-    .timer-container { width: 100%; background: rgba(255,255,255,0.1); height: 12px; border-radius: 10px; overflow: hidden; margin-bottom: 15px; }
-    #timer-bar { height: 100%; width: 100%; background: #fbbf24; transition: width 0.1s linear; }
-    .card { cursor: pointer; transform-style: preserve-3d; transition: transform 0.5s; height: 100px; position: relative; }
+    .bubble { background: white; padding: 5px 10px; border-radius: 12px; font-weight: bold; font-size: 11px; margin-top: 5px; text-align: center; border: 2px solid #FFD700; color: #333; }
+    
+    .timer-container { width: 100%; background: rgba(255,255,255,0.1); height: 14px; border-radius: 10px; overflow: hidden; margin-bottom: 20px; border: 1px solid rgba(255,255,255,0.2); }
+    #timer-bar { height: 100%; width: 100%; background: linear-gradient(to right, #fbbf24, #f59e0b); transition: width 0.1s linear; }
+    
+    .hijaiyah-box { cursor: pointer; background: white; color: #1e1b4b; border-radius: 15px; font-size: 2rem; font-weight: 800; display: flex; align-items: center; justify-content: center; height: 70px; border-bottom: 5px solid #cbd5e1; transition: all 0.2s; }
+    .hijaiyah-box:active { transform: translateY(4px); border-bottom: 0; }
+    .hijaiyah-target { border: 2px dashed rgba(255,255,255,0.3); border-radius: 15px; height: 70px; display: flex; align-items: center; justify-content: center; color: white; font-size: 1.5rem; }
+    
+    .card { cursor: pointer; transform-style: preserve-3d; transition: transform 0.5s; height: 110px; position: relative; }
     .card.flipped { transform: rotateY(180deg); }
-    .card-face { position: absolute; width: 100%; height: 100%; backface-visibility: hidden; display: flex; align-items: center; justify-content: center; border-radius: 15px; font-weight: bold; padding: 5px; text-align: center; }
-    .card-front { background: #4f46e5; color: white; border: 2px solid rgba(255,255,255,0.2); font-size: 24px; }
-    .card-back { background: white; color: #1e1b4b; transform: rotateY(180deg); border: 3px solid #FFD700; font-size: 14px; }
+    .card-face { position: absolute; width: 100%; height: 100%; backface-visibility: hidden; display: flex; align-items: center; justify-content: center; border-radius: 20px; font-weight: bold; padding: 5px; text-align: center; border: 2px solid rgba(255,255,255,0.1); }
+    .card-front { background: #4f46e5; color: white; font-size: 30px; }
+    .card-back { background: white; color: #1e1b4b; transform: rotateY(180deg); border: 4px solid #FFD700; font-size: 16px; }
   </style>
 </head>
 <body class="h-full overflow-hidden bg-[#1a1a3e]">
   <div id="app" class="min-h-full w-full relative overflow-hidden flex items-center justify-center" style="background: linear-gradient(180deg, #1a1a3e 0%, #2d1b4e 100%);">
+    
     <div id="background-elements" class="fixed inset-0 pointer-events-none"></div>
+
     <div id="aidin-reaction" class="aidin-pop">
         <div class="aidin-container"><img id="aidin-face" src="" class="aidin-img"></div>
         <div id="aidin-bubble" class="bubble">Wah!</div>
     </div>
 
     <div class="relative z-10 w-full max-w-lg p-4 flex flex-col items-center">
+      
       <div class="mb-6 text-center">
-          <h2 class="text-white/60 text-xs tracking-[0.3em] uppercase font-black mb-1">Game Ramadhan Aidin</h2>
+          <h2 class="text-white/40 text-[10px] tracking-[0.4em] uppercase font-black">Game Ramadhan Aidin</h2>
           <p class="text-pink-400 text-sm font-bold tracking-widest uppercase">by Babah ❤️</p>
       </div>
 
       <div id="home-screen" class="text-center w-full">
-        <div class="text-7xl mb-4">🌙</div>
-        <div class="grid grid-cols-1 gap-4 mb-8">
-          <button onclick="startGame('quiz')" class="bg-emerald-500 text-white text-2xl font-bold py-5 rounded-3xl shadow-lg hover:scale-105 border-b-8 border-emerald-700 transition-all">Kuiz Ramadhan 🕌</button>
-          <button onclick="startGame('collect')" class="bg-purple-500 text-white text-2xl font-bold py-5 rounded-3xl shadow-lg hover:scale-105 border-b-8 border-purple-700 transition-all">Kira Bintang ⭐</button>
-          <button onclick="startGame('memory')" class="bg-orange-500 text-white text-2xl font-bold py-5 rounded-3xl shadow-lg hover:scale-105 border-b-8 border-orange-700 transition-all">Kad Memori 🎴</button>
+        <div class="text-7xl mb-6">🌙</div>
+        <div class="grid grid-cols-2 gap-3 mb-6">
+          <button onclick="startGame('quiz')" class="bg-emerald-500 text-white text-sm font-bold py-4 rounded-2xl shadow-lg border-b-4 border-emerald-700 hover:scale-105 transition-all">KUIZ 🕌</button>
+          <button onclick="startGame('collect')" class="bg-purple-500 text-white text-sm font-bold py-4 rounded-2xl shadow-lg border-b-4 border-purple-700 hover:scale-105 transition-all">BINTANG ⭐</button>
+          <button onclick="startGame('memory')" class="bg-orange-600 text-white text-sm font-bold py-4 rounded-2xl shadow-lg border-b-4 border-orange-800 hover:scale-105 transition-all">MEMORI 🎴</button>
+          <button onclick="startGame('sedekah')" class="bg-yellow-500 text-white text-sm font-bold py-4 rounded-2xl shadow-lg border-b-4 border-yellow-700 hover:scale-105 transition-all">SEDEKAH 💰</button>
+          <button onclick="startGame('amalan')" class="bg-pink-500 text-white text-sm font-bold py-4 rounded-2xl shadow-lg border-b-4 border-pink-700 hover:scale-105 transition-all">AMALAN ✨</button>
+          <button onclick="startGame('hijaiyah')" class="bg-blue-500 text-white text-sm font-bold py-4 rounded-2xl shadow-lg border-b-4 border-blue-700 hover:scale-105 transition-all">HIJAIYAH 📖</button>
         </div>
+        
         <div class="bg-white/10 backdrop-blur-md rounded-2xl p-4 w-full border border-white/20">
-            <p class="text-white/40 text-[10px] uppercase font-bold mb-2 tracking-widest">Rekod Peribadi Aidin</p>
-            <div class="grid grid-cols-3 gap-2 text-[10px] text-white/80">
-                <div>KUIZ: <span id="rec-quiz" class="text-yellow-400 font-bold">-</span></div>
-                <div>BINTANG: <span id="rec-collect" class="text-yellow-400 font-bold">-</span></div>
-                <div>MEMORI: <span id="rec-memory" class="text-yellow-400 font-bold">-</span></div>
-            </div>
+            <p class="text-white/40 text-[10px] uppercase font-bold mb-3 tracking-widest">🏆 REKOD TERBAIK AIDIN</p>
+            <div id="records-board" class="grid grid-cols-2 gap-x-6 gap-y-2 text-[10px] text-white/90 text-left px-4 uppercase font-bold"></div>
         </div>
       </div>
 
       <div id="game-screen" class="hidden text-center w-full">
-        <div class="bg-white/10 backdrop-blur-xl rounded-[2.5rem] p-8 shadow-2xl border border-white/20 relative">
+        <div class="bg-white/10 backdrop-blur-xl rounded-[3rem] p-8 shadow-2xl border border-white/20 relative min-h-[450px]">
           <div class="flex justify-between items-center mb-4">
-            <div id="game-label" class="text-yellow-300 text-xs font-black uppercase tracking-widest">Masa: <span id="live-timer">0</span>s</div>
-            <div class="bg-indigo-600 text-white px-4 py-1 rounded-full font-black text-sm">⭐ <span id="current-score">0</span></div>
+            <div class="text-yellow-300 text-xs font-black uppercase tracking-widest">Masa: <span id="live-timer">0</span>s</div>
+            <div class="bg-indigo-600 text-white px-4 py-1 rounded-full font-black text-sm border-2 border-indigo-400">⭐ <span id="current-score">0</span></div>
           </div>
+          
           <div class="timer-container"><div id="timer-bar"></div></div>
+          
           <div id="quiz-area" class="hidden">
-            <h2 id="question-text" class="text-2xl font-bold text-white mb-8 min-h-[70px]"></h2>
+            <h2 id="question-text" class="text-2xl font-bold text-white mb-8 min-h-[80px] leading-tight"></h2>
             <div id="answers-container" class="grid grid-cols-1 gap-4"></div>
           </div>
+
           <div id="collect-area" class="hidden relative h-72 bg-indigo-950/40 rounded-3xl overflow-hidden border border-white/10"></div>
+
           <div id="memory-area" class="hidden grid grid-cols-3 gap-3"></div>
+
+          <div id="sedekah-area" class="hidden relative h-72 bg-yellow-900/10 rounded-3xl overflow-hidden border border-white/5">
+             <div id="tabung" class="absolute bottom-4 left-1/2 -translate-x-1/2 text-6xl">🍯</div>
+          </div>
+
+          <div id="amalan-area" class="hidden relative h-72 bg-pink-900/10 rounded-3xl overflow-hidden border border-white/5"></div>
+
+          <div id="hijaiyah-area" class="hidden">
+              <p class="text-white/50 text-xs mb-4 uppercase tracking-tighter">Susun ikut urutan: <span id="hijaiyah-hint" class="text-yellow-300 font-black"></span></p>
+              <div id="hijaiyah-targets" class="grid grid-cols-4 gap-3 mb-8"></div>
+              <div id="hijaiyah-options" class="grid grid-cols-4 gap-3"></div>
+          </div>
         </div>
       </div>
 
       <div id="result-screen" class="hidden text-center w-full">
-        <div class="bg-white/10 backdrop-blur-xl rounded-[3rem] p-12 shadow-2xl border border-white/20">
-          <h2 id="result-title" class="text-4xl font-black text-yellow-300 mb-4">Tamat!</h2>
-          <div class="space-y-2 mb-8 text-white">
-            <p class="text-xl">Bintang: <span id="result-stars" class="text-yellow-400 font-black">0</span></p>
-            <p class="text-lg opacity-80">Masa Diambil: <span id="result-time" class="font-bold">0</span> saat</p>
+        <div class="bg-white/10 backdrop-blur-xl rounded-[3.5rem] p-12 shadow-2xl border border-white/20">
+          <h2 id="res-title" class="text-4xl font-black text-yellow-300 mb-6">Alhamdulillah!</h2>
+          <div class="space-y-3 mb-10 text-white">
+            <p class="text-2xl">Skor: <span id="result-stars" class="text-yellow-400 font-black">0</span> ⭐</p>
+            <p class="text-lg opacity-70 tracking-widest uppercase">Masa: <span id="result-time" class="font-bold">0</span> saat</p>
           </div>
-          <button onclick="location.reload()" class="w-full bg-emerald-500 text-white font-black py-5 rounded-2xl text-2xl border-b-8 border-emerald-700 transition-all">Main Lagi 🚀</button>
+          <button onclick="location.reload()" class="w-full bg-emerald-500 text-white font-black py-5 rounded-2xl text-2xl border-b-8 border-emerald-700 hover:scale-105 active:border-b-0 active:translate-y-2 transition-all">MAIN LAGI 🚀</button>
         </div>
       </div>
+
     </div>
   </div>
 
   <script>
+    // Config Gambar
     const GAMBAR_AIDIN_SENYUM = "https://i.postimg.cc/Bbz5NjGs/happy.jpg"; 
     const GAMBAR_AIDIN_SEDIH = "https://i.postimg.cc/fWPYGS6w/sad.jpg";   
-    const SOUND_BETUL = new Audio("https://assets.mixkit.co/active_storage/sfx/2000/2000-preview.mp3");
-    const SOUND_SALAH = new Audio("https://assets.mixkit.co/active_storage/sfx/2959/2959-preview.mp3");
+    
+    // Hijaiyah Full Data
+    const hijaiyahFull = ['ا', 'ب', 'ت', 'ث', 'ج', 'ح', 'kh', 'د', 'ذ', 'ر', 'ز', 'س', 'sy', 'ص', 'dho', 'tho', 'zho', 'ain', 'gho', 'ف', 'ق', 'ك', 'ل', 'م', 'ن', 'و', 'ه', 'لا', 'ء', 'ي'];
+    
+    // Database Soalan Kuiz (30 Soalan)
+    const allQuizQuestions = [
+      {q:'Bulan apa kita mula puasa?', a:['Ramadhan','Syawal'], c:0},
+      {q:'Makan pagi sebelum Subuh?', a:['Sahur','Berbuka'], c:0},
+      {q:'Berbuka waktu Azan apa?', a:['Maghrib','Isyak'], c:0},
+      {q:'Buah sunnah berbuka?', a:['Kurma','Epal'], c:0},
+      {q:'Boleh makan waktu siang?', a:['Tak Boleh','Boleh'], c:0},
+      {q:'Siapa bagi pahala?', a:['Allah','Manusia'], c:0},
+      {q:'Solat malam Ramadhan?', a:['Tarawih','Jumaat'], c:0},
+      {q:'Habis puasa sambut apa?', a:['Hari Raya','Hari Lahir'], c:0},
+      {q:'Bulan Ramadhan bulan penuh?', a:['Pahala','Duit'], c:0},
+      {q:'Aidin budak yang?', a:['Budak Baik','Nakal'], c:0},
+      {q:'Banyakkan baca apa?', a:['Al-Quran','Komik'], c:0},
+      {q:'Niat puasa bila?', a:['Malam','Siang'], c:0},
+      {q:'Warna Ketupat?', a:['Hijau','Biru'], c:0},
+      {q:'Sedekah dapat apa?', a:['Pahala','Hukuman'], c:0},
+      {q:'Aidin sayang Babah?', a:['Sayang Sangat!','Tak'], c:0},
+      {q:'Zakat Fitrah dibayar bila?', a:['Ramadhan','Hari Raya'], c:0},
+      {q:'Waktu puasa kena?', a:['Sabar','Marah'], c:0},
+      {q:'Duit Raya dapat bila?', a:['Hari Raya','Waktu Sekolah'], c:0},
+      {q:'Syurga di bawah kaki?', a:['Ibu','Meja'], c:0},
+      {q:'Bulan Ramadhan bulan ke?', a:['Sembilan','Satu'], c:0}
+    ];
 
     let score = 0, currentMode = '', timer, startTime, totalTimeSpent = 0;
-    let memoryMatches = 0;
-
-    // Load Rekod
+    
     function loadRecords() {
-        document.getElementById('rec-quiz').textContent = localStorage.getItem('aidin_quiz') || '-';
-        document.getElementById('rec-collect').textContent = localStorage.getItem('aidin_collect') || '-';
-        document.getElementById('rec-memory').textContent = (localStorage.getItem('aidin_memory_time') || '-') + 's';
+        const board = document.getElementById('records-board');
+        board.innerHTML = '';
+        ['quiz', 'collect', 'memory', 'sedekah', 'amalan', 'hijaiyah'].forEach(g => {
+            const s = localStorage.getItem('aidin_s_'+g) || 0;
+            const t = localStorage.getItem('aidin_t_'+g) || '-';
+            board.innerHTML += `<div>${g}: <span class="text-yellow-400">${s}⭐ / ${t}s</span></div>`;
+        });
     }
     loadRecords();
 
     function reactAidin(isCorrect, msg) {
         const div = document.getElementById('aidin-reaction');
-        const img = document.getElementById('aidin-face');
-        const bub = document.getElementById('aidin-bubble');
         div.classList.remove('aidin-left', 'aidin-right');
         div.classList.add(Math.random() > 0.5 ? 'aidin-left' : 'aidin-right');
         div.style.display = 'block';
-        if(isCorrect) { img.src = GAMBAR_AIDIN_SENYUM; bub.textContent = msg || "Pintar!"; SOUND_BETUL.play(); }
-        else { img.src = GAMBAR_AIDIN_SEDIH; bub.textContent = "Alahai..."; SOUND_SALAH.play(); }
+        document.getElementById('aidin-face').src = isCorrect ? GAMBAR_AIDIN_SENYUM : GAMBAR_AIDIN_SEDIH;
+        document.getElementById('aidin-bubble').textContent = msg || (isCorrect ? "Bijak!" : "Alahai...");
         setTimeout(() => div.style.display = 'none', 1500);
     }
 
-    // GAME 1: KUIZ (10 soalan rawak)
-    const allQuestions = [{ q: 'Makan sebelum Subuh?', a: ['Sahur', 'Berbuka'], c: 0 },{ q: 'Buah sunnah berbuka?', a: ['Kurma', 'Epal'], c: 0 },{ q: 'Solat malam Ramadhan?', a: ['Tarawih', 'Zohor'], c: 0 },{ q: 'Boleh makan sengaja?', a: ['Tak Boleh', 'Boleh'], c: 0 },{ q: 'Lepas Ramadhan sambut?', a: ['Hari Raya', 'Hari Jadi'], c: 0 }];
-    let qIdx = 0, quizSet = [];
-
+    // GAME 1: KUIZ
     function startQuiz() {
-        qIdx = 0; quizSet = allQuestions.sort(() => Math.random() - 0.5).slice(0,5);
-        showQuestion();
-    }
-    function showQuestion() {
-        if(qIdx >= quizSet.length) return finish();
-        const q = quizSet[qIdx];
-        document.getElementById('question-text').textContent = q.q;
-        const cont = document.getElementById('answers-container');
-        cont.innerHTML = '';
-        q.a.forEach((ans, i) => {
-            const b = document.createElement('button');
-            b.className = 'bg-white/10 p-5 rounded-2xl text-white font-bold text-xl border border-white/10';
-            b.textContent = ans;
-            b.onclick = () => {
-                if(i === q.c) { score += 10; reactAidin(true); } else reactAidin(false);
-                qIdx++; document.getElementById('current-score').textContent = score;
-                showQuestion();
-            };
-            cont.appendChild(b);
-        });
+        let quizSet = [...allQuizQuestions].sort(()=>Math.random()-0.5).slice(0,10);
+        let idx = 0;
+        const show = () => {
+            if(idx >= quizSet.length) return finish();
+            document.getElementById('question-text').textContent = quizSet[idx].q;
+            const cont = document.getElementById('answers-container'); cont.innerHTML = '';
+            quizSet[idx].a.forEach((ans, i) => {
+                const b = document.createElement('button');
+                b.className = 'bg-white/10 p-5 rounded-2xl text-white font-bold text-xl border border-white/5 shadow-md active:scale-95 transition-all';
+                b.textContent = ans;
+                b.onclick = () => { if(i===quizSet[idx].c){score+=10; reactAidin(true);} else reactAidin(false); idx++; show(); };
+                cont.appendChild(b);
+            });
+        };
+        show();
     }
 
     // GAME 2: TANGKAP BINTANG
     function startCollect() {
-        let count = 0;
         let spawn = setInterval(() => {
             if(currentMode !== 'collect' || totalTimeSpent >= 20) { clearInterval(spawn); return; }
-            const s = document.createElement('div');
-            s.className = 'absolute text-5xl cursor-pointer';
-            s.style.left = Math.random() * 80 + 10 + '%'; s.style.top = Math.random() * 80 + 10 + '%';
+            const s = document.createElement('div'); s.className = 'absolute text-5xl cursor-pointer select-none';
+            s.style.left = Math.random()*80+10+'%'; s.style.top = Math.random()*80+10+'%';
             s.textContent = '⭐';
-            s.onclick = () => { score += 2; document.getElementById('current-score').textContent = score; s.remove(); };
+            s.onclick = () => { score+=2; document.getElementById('current-score').textContent=score; s.remove(); };
             document.getElementById('collect-area').appendChild(s);
-            setTimeout(() => s.remove(), 1000);
-        }, 600);
+            setTimeout(()=>s.remove(), 1000);
+        }, 500);
     }
 
-    // GAME 3: MEMORI
-    const memData = [{ img: '🕌', txt: 'Masjid' }, { img: '🌴', txt: 'Kurma' }, { img: '🌙', txt: 'Bulan' }];
+    // GAME 3: MEMORI (Gambar & Perkataan)
     function startMemory() {
-        memoryMatches = 0;
+        const memItems = [
+            {i:'🕌',t:'MASJID'}, {i:'🌴',t:'KURMA'}, {i:'🌙',t:'BULAN'}, 
+            {i:'🍛',t:'NASI'}, {i:'✨',t:'PAHALA'}, {i:'🤲',t:'DOA'}
+        ];
+        let matches = 0; let flipped = [];
         const area = document.getElementById('memory-area'); area.innerHTML = '';
-        let cards = []; memData.forEach(d => { cards.push({ v: d.img, id: d.img }); cards.push({ v: d.txt, id: d.img }); });
-        cards.sort(() => Math.random() - 0.5).forEach(data => {
-            const c = document.createElement('div');
-            c.className = 'card';
+        let cards = []; memItems.forEach(d => { cards.push({v:d.i, id:d.i}); cards.push({v:d.t, id:d.i}); });
+        cards.sort(()=>Math.random()-0.5).forEach(data => {
+            const c = document.createElement('div'); c.className = 'card';
             c.innerHTML = `<div class="card-face card-front">🕌</div><div class="card-face card-back">${data.v}</div>`;
             c.onclick = () => {
-                if(flipped.length < 2 && !c.classList.contains('flipped')) {
-                    c.classList.add('flipped'); flipped.push({ el: c, id: data.id });
-                    if(flipped.length === 2) {
-                        if(flipped[0].id === flipped[1].id) {
-                            score += 15; memoryMatches++; reactAidin(true, "Padan!"); flipped = [];
-                            if(memoryMatches === memData.length) setTimeout(finish, 500);
-                        } else { setTimeout(() => { flipped.forEach(f => f.el.classList.remove('flipped')); flipped = []; }, 800); }
+                if(flipped.length<2 && !c.classList.contains('flipped')){
+                    c.classList.add('flipped'); flipped.push({el:c, id:data.id});
+                    if(flipped.length===2){
+                        if(flipped[0].id===flipped[1].id){ score+=15; matches++; reactAidin(true); flipped=[]; if(matches===6) finish(); }
+                        else { setTimeout(()=>{flipped.forEach(f=>f.el.classList.remove('flipped')); flipped=[];},800); }
                         document.getElementById('current-score').textContent = score;
                     }
                 }
@@ -181,31 +224,85 @@
             area.appendChild(c);
         });
     }
-    let flipped = [];
+
+    // GAME 4: SEDEKAH
+    function startSedekah() {
+        const area = document.getElementById('sedekah-area');
+        const tabung = document.getElementById('tabung');
+        let tX = 50;
+        area.onmousemove = (e) => { tX = ((e.clientX - area.getBoundingClientRect().left) / area.clientWidth) * 100; tabung.style.left = Math.max(10, Math.min(90, tX)) + '%'; };
+        let spawn = setInterval(() => {
+            if(currentMode !== 'sedekah' || totalTimeSpent >= 30) { clearInterval(spawn); return; }
+            const c = document.createElement('div'); c.className = 'absolute text-4xl'; c.textContent = '🪙';
+            let x = Math.random()*90; c.style.left = x+'%'; c.style.top = '0px'; area.appendChild(c);
+            let pos = 0;
+            let fall = setInterval(() => {
+                pos+=5; c.style.top=pos+'px';
+                if(pos>220 && Math.abs(x-tX)<15){ score+=5; reactAidin(true,"+5"); c.remove(); clearInterval(fall); }
+                if(pos>280){ c.remove(); clearInterval(fall); }
+            }, 20);
+        }, 700);
+    }
+
+    // GAME 5: AMALAN
+    function startAmalan() {
+        const amSet = [{e:'📖',p:10,g:true},{e:'🕌',p:10,g:true},{e:'🥣',p:10,g:true},{e:'🤲',p:10,g:true},{e:'😡',p:-15,g:false},{e:'🍭',p:-15,g:false}];
+        let spawn = setInterval(() => {
+            if(currentMode !== 'amalan' || totalTimeSpent >= 30) { clearInterval(spawn); return; }
+            const o = amSet[Math.floor(Math.random()*amSet.length)];
+            const d = document.createElement('div'); d.className = 'absolute text-5xl cursor-pointer';
+            d.style.left = Math.random()*85+'%'; d.style.top = '0px'; d.textContent = o.e;
+            document.getElementById('amalan-area').appendChild(d);
+            d.onclick = () => { score+=o.p; reactAidin(o.g); d.remove(); document.getElementById('current-score').textContent=score; };
+            let pos = 0;
+            let fall = setInterval(() => { pos+=3; d.style.top=pos+'px'; if(pos>280){ d.remove(); clearInterval(fall); } }, 20);
+        }, 800);
+    }
+
+    // GAME 6: HIJAIYAH
+    function startHijaiyah() {
+        const start = Math.floor(Math.random()*(hijaiyahFull.length-4));
+        const correct = hijaiyahFull.slice(start, start+4);
+        const shuffled = [...correct].sort(()=>Math.random()-0.5);
+        document.getElementById('hijaiyah-hint').textContent = correct.join(' → ');
+        let step = 0;
+        const targets = document.getElementById('hijaiyah-targets'); targets.innerHTML = '';
+        const options = document.getElementById('hijaiyah-options'); options.innerHTML = '';
+        correct.forEach((h,i)=> { targets.innerHTML += `<div id="th-${i}" class="hijaiyah-target">?</div>`; });
+        shuffled.forEach(h => {
+            const b = document.createElement('div'); b.className = 'hijaiyah-box'; b.textContent = h;
+            b.onclick = () => {
+                if(h === correct[step]){
+                    const t = document.getElementById('th-'+step); t.textContent = h; t.className = 'hijaiyah-box bg-emerald-500 text-white';
+                    b.style.visibility = 'hidden'; score += 20; step++;
+                    if(step === 4){ reactAidin(true, "Muntaz!"); setTimeout(startHijaiyah, 800); }
+                } else { score -= 5; reactAidin(false); }
+                document.getElementById('current-score').textContent = score;
+            };
+            options.appendChild(b);
+        });
+    }
 
     function startTimer() {
         startTime = Date.now();
-        const bar = document.getElementById('timer-bar');
-        const limit = (currentMode === 'memory' ? 60 : (currentMode === 'collect' ? 20 : 60));
+        let limit = (currentMode==='quiz'||currentMode==='memory'||currentMode==='hijaiyah') ? 60 : (currentMode==='collect'?20:30);
         timer = setInterval(() => {
             totalTimeSpent = Math.floor((Date.now() - startTime) / 1000);
             document.getElementById('live-timer').textContent = totalTimeSpent;
             let progress = 100 - (totalTimeSpent / limit * 100);
-            bar.style.width = Math.max(0, progress) + '%';
+            document.getElementById('timer-bar').style.width = Math.max(0, progress) + '%';
             if(totalTimeSpent >= limit) finish();
         }, 100);
     }
 
     function startGame(mode) {
-        currentMode = mode; score = 0; totalTimeSpent = 0;
+        currentMode = mode; score = 0;
         document.getElementById('home-screen').classList.add('hidden');
         document.getElementById('game-screen').classList.remove('hidden');
-        ['quiz-area','collect-area','memory-area'].forEach(a => document.getElementById(a).classList.add('hidden'));
+        ['quiz-area','collect-area','memory-area','sedekah-area','amalan-area','hijaiyah-area'].forEach(a => document.getElementById(a).classList.add('hidden'));
         document.getElementById(mode + '-area').classList.remove('hidden');
         startTimer();
-        if(mode === 'quiz') startQuiz();
-        if(mode === 'collect') startCollect();
-        if(mode === 'memory') startMemory();
+        if(mode==='quiz') startQuiz(); if(mode==='collect') startCollect(); if(mode==='memory') startMemory(); if(mode==='sedekah') startSedekah(); if(mode==='amalan') startAmalan(); if(mode==='hijaiyah') startHijaiyah();
     }
 
     function finish() {
@@ -214,28 +311,21 @@
         document.getElementById('result-screen').classList.remove('hidden');
         document.getElementById('result-stars').textContent = score;
         document.getElementById('result-time').textContent = totalTimeSpent;
-
-        // Simpan Rekod
-        if(currentMode === 'quiz') {
-            let old = localStorage.getItem('aidin_quiz') || 0;
-            if(score > old) localStorage.setItem('aidin_quiz', score);
-        } else if(currentMode === 'collect') {
-            let old = localStorage.getItem('aidin_collect') || 0;
-            if(score > old) localStorage.setItem('aidin_collect', score);
-        } else if(currentMode === 'memory') {
-            let old = localStorage.getItem('aidin_memory_time') || 999;
-            if(totalTimeSpent < old) localStorage.setItem('aidin_memory_time', totalTimeSpent);
-        }
+        const oldS = localStorage.getItem('aidin_s_'+currentMode) || 0;
+        if(score > oldS) localStorage.setItem('aidin_s_'+currentMode, score);
+        const oldT = localStorage.getItem('aidin_t_'+currentMode) || 999;
+        if(totalTimeSpent < oldT) localStorage.setItem('aidin_t_'+currentMode, totalTimeSpent);
     }
 
+    // BG Decoration
     const bg = document.getElementById('background-elements');
-    const items = ['🕌', '🌴', '🟢', '⭐'];
+    const bgItems = ['🕌', '🌴', '⭐', '🌙', '🟢'];
     setInterval(() => {
         const i = document.createElement('div'); i.className = 'bg-item';
-        i.textContent = items[Math.floor(Math.random()*items.length)];
+        i.textContent = bgItems[Math.floor(Math.random()*bgItems.length)];
         i.style.left = Math.random()*100+'%'; bg.appendChild(i);
-        setTimeout(() => i.remove(), 15000);
-    }, 2500);
+        setTimeout(() => i.remove(), 12000);
+    }, 2000);
   </script>
 </body>
 </html>
