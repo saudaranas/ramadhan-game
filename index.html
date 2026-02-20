@@ -100,6 +100,32 @@
   </div>
 
   <script>
+    // --- AUDIO ENGINE ---
+    const sfx = {
+        click: new Audio('https://assets.mixkit.co/active_storage/sfx/2568/2568-preview.mp3'),
+        correct: new Audio('https://assets.mixkit.co/active_storage/sfx/2000/2000-preview.mp3'),
+        wrong: new Audio('https://assets.mixkit.co/active_storage/sfx/2571/2571-preview.mp3'),
+        finish: new Audio('https://assets.mixkit.co/active_storage/sfx/2019/2019-preview.mp3'),
+        collect: new Audio('https://assets.mixkit.co/active_storage/sfx/2017/2017-preview.mp3')
+    };
+
+    // Background Music
+    const bgm = new Audio('https://www.bensound.com/bensound-music/bensound-relaxing.mp3'); 
+    bgm.loop = true;
+    bgm.volume = 0.3;
+
+    function playSound(type) {
+        const sound = sfx[type];
+        if (sound) {
+            sound.currentTime = 0;
+            sound.play().catch(e => console.log("Audio play blocked"));
+        }
+    }
+
+    function startBGM() {
+        bgm.play().catch(e => console.log("BGM wait for user interaction"));
+    }
+
     const GAMBAR_AIDIN_SENYUM = "https://i.postimg.cc/Bbz5NjGs/happy.jpg"; 
     const GAMBAR_AIDIN_SEDIH = "https://i.postimg.cc/fWPYGS6w/sad.jpg";   
     const hijaiyahFull = ['ا', 'ب', 'ت', 'ث', 'ج', 'ح', 'kh', 'د', 'ذ', 'ر', 'ز', 'س', 'sy', 'ص', 'dho', 'tho', 'zho', 'ain', 'gho', 'ف', 'ق', 'ك', 'ل', 'م', 'ن', 'و', 'ه', 'لا', 'ء', 'ي'];
@@ -120,11 +146,17 @@
         div.classList.remove('aidin-left', 'aidin-right'); div.classList.add(Math.random() > 0.5 ? 'aidin-left' : 'aidin-right');
         div.style.display = 'block'; document.getElementById('aidin-face').src = isCorrect ? GAMBAR_AIDIN_SENYUM : GAMBAR_AIDIN_SEDIH;
         document.getElementById('aidin-bubble').textContent = msg || (isCorrect ? "Bijak!" : "Alahai...");
+        
+        isCorrect ? playSound('correct') : playSound('wrong');
+        
         setTimeout(() => div.style.display = 'none', 1200);
     }
 
     function startGame(mode) {
+        startBGM();
+        playSound('click');
         currentMode = mode; score = 0; totalTimeSpent = 0;
+        document.getElementById('current-score').textContent = "0";
         document.getElementById('home-screen').classList.add('hidden');
         document.getElementById('game-screen').classList.remove('hidden');
         ['quiz-area','collect-area','memory-area','sedekah-area','amalan-area','hijaiyah-area'].forEach(a => document.getElementById(a).classList.add('hidden'));
@@ -141,7 +173,12 @@
             const cont = document.getElementById('answers-container'); cont.innerHTML = '';
             qSet[idx].a.forEach((ans, i) => {
                 const b = document.createElement('button'); b.className = 'bg-white/10 p-4 rounded-xl text-white font-bold border border-white/5';
-                b.textContent = ans; b.onclick = () => { if(i===qSet[idx].c){score+=10; reactAidin(true);} else reactAidin(false); idx++; show(); };
+                b.textContent = ans; b.onclick = () => { 
+                    if(i===qSet[idx].c){score+=10; reactAidin(true);} 
+                    else { reactAidin(false); }
+                    document.getElementById('current-score').textContent = score;
+                    idx++; show(); 
+                };
                 cont.appendChild(b);
             });
         }; show();
@@ -152,7 +189,10 @@
             if(currentMode !== 'collect' || totalTimeSpent >= 20) { clearInterval(spawn); return; }
             const s = document.createElement('div'); s.className = 'absolute text-5xl cursor-pointer';
             s.style.left = Math.random()*80+10+'%'; s.style.top = Math.random()*80+10+'%'; s.textContent = '⭐';
-            s.onclick = () => { score+=2; document.getElementById('current-score').textContent=score; s.remove(); };
+            s.onclick = () => { 
+                playSound('collect');
+                score+=2; document.getElementById('current-score').textContent=score; s.remove(); 
+            };
             document.getElementById('collect-area').appendChild(s); setTimeout(()=>s.remove(), 1000);
         }, 500);
     }
@@ -166,10 +206,17 @@
             c.innerHTML = `<div class="card-face card-front">🕌</div><div class="card-face card-back">${data.v}</div>`;
             c.onclick = () => {
                 if(flipped.length<2 && !c.classList.contains('flipped')){
+                    playSound('click');
                     c.classList.add('flipped'); flipped.push({el:c, id:data.id});
                     if(flipped.length===2){
-                        if(flipped[0].id===flipped[1].id){ score+=15; matches++; reactAidin(true); flipped=[]; if(matches===3) finish(); }
-                        else { setTimeout(()=>{flipped.forEach(f=>f.el.classList.remove('flipped')); flipped=[];},800); }
+                        if(flipped[0].id===flipped[1].id){ 
+                            score+=15; matches++; reactAidin(true); flipped=[]; if(matches===3) setTimeout(finish, 800); 
+                        }
+                        else { 
+                            setTimeout(()=>{ 
+                                flipped.forEach(f=>f.el.classList.remove('flipped')); flipped=[]; 
+                            }, 800); 
+                        }
                         document.getElementById('current-score').textContent = score;
                     }
                 }
@@ -179,14 +226,26 @@
 
     function startSedekah() {
         const area = document.getElementById('sedekah-area'); const tabung = document.getElementById('tabung');
-        let tX = 50; area.onmousemove = (e) => { tX = ((e.clientX - area.getBoundingClientRect().left) / area.clientWidth) * 100; tabung.style.left = Math.max(10, Math.min(90, tX)) + '%'; };
+        let tX = 50; 
+        const moveHandler = (e) => { 
+            let clientX = (e.touches && e.touches[0]) ? e.touches[0].clientX : e.clientX;
+            let rect = area.getBoundingClientRect();
+            tX = ((clientX - rect.left) / rect.width) * 100; 
+            tabung.style.left = Math.max(10, Math.min(90, tX)) + '%'; 
+        };
+        area.onmousemove = moveHandler;
+        area.ontouchmove = (e) => { moveHandler(e); e.preventDefault(); };
+
         let spawn = setInterval(() => {
             if(currentMode !== 'sedekah' || totalTimeSpent >= 30) { clearInterval(spawn); return; }
             const c = document.createElement('div'); c.className = 'absolute text-4xl'; c.textContent = '🪙';
             let x = Math.random()*90; c.style.left = x+'%'; c.style.top = '0px'; area.appendChild(c);
             let pos = 0; let fall = setInterval(() => {
                 pos+=5; c.style.top=pos+'px';
-                if(pos>210 && Math.abs(x-tX)<15){ score+=5; reactAidin(true); c.remove(); clearInterval(fall); }
+                if(pos>210 && Math.abs(x-tX)<15){ 
+                    playSound('collect');
+                    score+=5; document.getElementById('current-score').textContent=score; c.remove(); clearInterval(fall); 
+                }
                 if(pos>260){ c.remove(); clearInterval(fall); }
             }, 20);
         }, 700);
@@ -200,7 +259,10 @@
             const d = document.createElement('div'); d.className = 'absolute text-5xl cursor-pointer';
             d.style.left = Math.random()*85+'%'; d.style.top = '0px'; d.textContent = o.e;
             document.getElementById('amalan-area').appendChild(d);
-            d.onclick = () => { score+=o.p; reactAidin(o.g); d.remove(); document.getElementById('current-score').textContent=score; };
+            d.onclick = () => { 
+                score+=o.p; reactAidin(o.g); d.remove(); 
+                document.getElementById('current-score').textContent=score; 
+            };
             let pos = 0; let fall = setInterval(() => { pos+=3; d.style.top=pos+'px'; if(pos>260){ d.remove(); clearInterval(fall); } }, 20);
         }, 800);
     }
@@ -216,8 +278,12 @@
             b.onclick = () => {
                 if(h === correct[step]){
                     const t = document.getElementById('th-'+step); t.textContent = h; t.className = 'hijaiyah-box bg-emerald-500 text-white';
-                    b.style.visibility = 'hidden'; score += 20; step++; if(step === 4){ reactAidin(true); setTimeout(startHijaiyah, 800); }
-                } else { score -= 5; reactAidin(false); }
+                    b.style.visibility = 'hidden'; score += 20; step++; 
+                    playSound('click');
+                    if(step === 4){ reactAidin(true); setTimeout(startHijaiyah, 800); }
+                } else { 
+                    score -= 5; reactAidin(false); 
+                }
                 document.getElementById('current-score').textContent = score;
             }; options.appendChild(b);
         });
@@ -236,7 +302,9 @@
     }
 
     function finish() {
-        clearInterval(timer); document.getElementById('game-screen').classList.add('hidden');
+        clearInterval(timer);
+        playSound('finish');
+        document.getElementById('game-screen').classList.add('hidden');
         document.getElementById('result-screen').classList.remove('hidden');
         document.getElementById('result-stars').textContent = score; document.getElementById('result-time').textContent = totalTimeSpent;
         const oldS = localStorage.getItem('aidin_s_'+currentMode) || 0; if(score > oldS) localStorage.setItem('aidin_s_'+currentMode, score);
